@@ -10,6 +10,8 @@ export default function Home() {
   const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState();
 
   async function onSubmit(event) {
+    setInterviewAnswerInput('')
+    setInterviewAnswerEvaluationResult('')
     event.preventDefault();
     try {
       const response = await fetch("/api/generateQuestion", {
