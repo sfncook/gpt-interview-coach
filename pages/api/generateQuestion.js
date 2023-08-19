@@ -1,9 +1,11 @@
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 
-const configuration = new Configuration({
+const configuration = {
   apiKey: process.env.OPENAI_API_KEY,
+}
+const openai = new OpenAI({
+  apiKey: configuration.apiKey,
 });
-const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
   if (!configuration.apiKey) {
@@ -27,12 +29,21 @@ export default async function (req, res) {
   }
 
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(jobTitle, jobDesc),
-      temperature: 0.6,
+    // const completion = await openAIApi.createCompletion({
+    //   model: "text-davinci-003",
+    //   prompt: generatePrompt(jobTitle, jobDesc),
+    //   temperature: 1,
+    // });
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {role: 'system', content: 'You are conducting a job interview and asking a candidate interview questions to evaluate how well suited they are for the job'},
+        {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
+      ],
+      model: 'gpt-3.5-turbo',
+      temperature: 1,
     });
-    res.status(200).json({ result: completion.data.choices[0].text });
+    console.log(completion.choices[0].message.content)
+    res.status(200).json({ result: completion.choices[0].message.content });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -50,7 +61,7 @@ export default async function (req, res) {
 }
 
 function generatePrompt(jobTitle, jobDesc) {
-  let prompt = `Give one possible question that might be asked during a job interview for a job with the title: "${jobTitle}"`
+  let prompt = `Ask an interview question for a job with the title: "${jobTitle}"`
   if(jobDesc) {
     prompt = prompt + ` and the following description:
       """
@@ -58,6 +69,6 @@ function generatePrompt(jobTitle, jobDesc) {
       """
     `
   }
-  console.log(prompt)
+  // console.log(prompt)
   return prompt
 }
