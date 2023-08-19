@@ -5,11 +5,14 @@ import styles from "./index.module.css";
 export default function Home() {
   const [jobTitleInput, setJobTitleInput] = useState("");
   const [jobDescInput, setJobDescInput] = useState("");
-  const [questionResult, setQuestionResult] = useState();
-  const [interviewAnswerInput, setInterviewAnswerInput] = useState();
-  const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState();
+  const [questionResult, setQuestionResult] = useState("");
+  const [interviewAnswerInput, setInterviewAnswerInput] = useState("");
+  const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState("");
+  // const initValue = (typeof window !== "undefined") ? localStorage.getItem('manyQuestions') : 0
+  const [manyQuestions, setManyQuestions] = useState(0);
 
   async function onSubmit(event) {
+    setManyQuestions(manyQuestions+1)
     setInterviewAnswerInput('')
     setInterviewAnswerEvaluationResult('')
     event.preventDefault();
@@ -28,8 +31,6 @@ export default function Home() {
       }
 
       setQuestionResult(data.result);
-      // setJobTitleInput("");
-      // setJobDescInput("");
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -79,6 +80,8 @@ export default function Home() {
     </form>
     : <span/>
 
+  const manyQuestionsStr = `Please consider donating $${manyQuestions*0.01} to my Venmo to help pay for the ChatGPT costs`
+
   return (
     <div>
       <Head>
@@ -86,6 +89,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <a href="Shawn-Cook-1.html"><div className={styles.result}>{manyQuestionsStr}</div></a>
         <h3>Interview Coach</h3>
         <form onSubmit={onSubmit}>
           <input
