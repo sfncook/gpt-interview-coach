@@ -4,7 +4,8 @@ import styles from "./index.module.css";
 
 export default function Home() {
   const [jobTitleInput, setJobTitleInput] = useState("");
-  const [result, setResult] = useState();
+  const [jobDescInput, setJobDescInput] = useState("");
+  const [questionResult, setQuestionResult] = useState();
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -14,7 +15,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jobTitle: jobTitleInput }),
+        body: JSON.stringify({ jobTitle: jobTitleInput, jobDesc: jobDescInput }),
       });
 
       const data = await response.json();
@@ -22,8 +23,9 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      setResult(data.result);
-      setJobTitleInput("");
+      setQuestionResult(data.result);
+      // setJobTitleInput("");
+      // setJobDescInput("");
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -48,9 +50,15 @@ export default function Home() {
             value={jobTitleInput}
             onChange={(e) => setJobTitleInput(e.target.value)}
           />
+          <textarea
+            name="jobDesc"
+            placeholder="Enter a job description"
+            value={jobDescInput}
+            onChange={(e) => setJobDescInput(e.target.value)}
+          />
           <input type="submit" value="Generate sample interview question" />
         </form>
-        <div className={styles.result}>{result}</div>
+        <div className={styles.result}>{questionResult}</div>
       </main>
     </div>
   );
