@@ -37,8 +37,11 @@
   align-items: center;
   padding-top: 60px;
 }
-.main .icon {
-  width: 34px;
+.main .venmo {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  max-width: 60%;
 }
 .main h3 {
   font-size: 32px;
@@ -73,6 +76,12 @@
   cursor: pointer;
 }
 .main .result {
+  font-weight: bold;
+  margin-top: 40px;
+  max-width: 600px;
+}
+.main .payment {
+  cursor: pointer;
   font-weight: bold;
   margin-top: 40px;
   max-width: 600px;

@@ -10,6 +10,7 @@ export default function Home() {
   const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState("");
   // const initValue = (typeof window !== "undefined") ? localStorage.getItem('manyQuestions') : 0
   const [manyQuestions, setManyQuestions] = useState(0);
+  const [showVenmo, setShowVenmo] = useState(false);
 
   async function onSubmit(event) {
     setManyQuestions(manyQuestions+1)
@@ -67,6 +68,17 @@ export default function Home() {
     }
   }
 
+
+  async function onMouseOverPayment(event) {
+    event.preventDefault();
+    setShowVenmo(true)
+  }
+
+  async function onMouseOutPayment(event) {
+    event.preventDefault();
+    setShowVenmo(false)
+  }
+
   const submitTxt = (questionResult) ? "Next question" : "Generate a sample interview question"
   let interviewAnswerEl = (questionResult) ?
     <form onSubmit={onSubmitInterviewAnswer}>
@@ -82,14 +94,18 @@ export default function Home() {
 
   const manyQuestionsStr = `Please consider donating $${manyQuestions*0.01} to my Venmo to help pay for the ChatGPT costs`
 
+  const paymentEl = (manyQuestions>0) ? <div>
+    <div className={styles.payment} onMouseOver={onMouseOverPayment} onMouseLeave={onMouseOutPayment}>{manyQuestionsStr}</div>
+    <img src="/venmo.png" className={styles.venmo} hidden={!showVenmo} />
+  </div> : <span/>
+
   return (
     <div>
       <Head>
         <title>Interview Question Analyzer</title>
       </Head>
-
       <main className={styles.main}>
-        <a href="Shawn-Cook-1.html"><div className={styles.result}>{manyQuestionsStr}</div></a>
+        {paymentEl}
         <h3>Interview Coach</h3>
         <form onSubmit={onSubmit}>
           <input
