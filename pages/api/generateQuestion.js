@@ -29,11 +29,6 @@ export default async function (req, res) {
   }
 
   try {
-    // const completion = await openAIApi.createCompletion({
-    //   model: "text-davinci-003",
-    //   prompt: generatePrompt(jobTitle, jobDesc),
-    //   temperature: 1,
-    // });
     const completion = await openai.chat.completions.create({
       messages: [
         {role: 'system', content: 'You are conducting a job interview and asking a candidate interview questions to evaluate how well suited they are for the job'},
