@@ -16,6 +16,7 @@ export default async function (req, res) {
   }
 
   const jobTitle = req.body.jobTitle || '';
+  const jobDesc = req.body.jobDesc || '';
   if (jobTitle.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -28,8 +29,8 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(jobTitle),
-      temperature: 1,
+      prompt: generatePrompt(jobTitle, jobDesc),
+      temperature: 0.6,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
@@ -48,6 +49,15 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(jobTitle) {
-  return `Give one possible question that might be asked during a job interview for a ${jobTitle}`;
+function generatePrompt(jobTitle, jobDesc) {
+  let prompt = `Give one possible question that might be asked during a job interview for a job with the title: "${jobTitle}"`
+  if(jobDesc) {
+    prompt = prompt + ` and the following description:
+      """
+      ${jobDesc}
+      """
+    `
+  }
+  console.log(prompt)
+  return prompt
 }
