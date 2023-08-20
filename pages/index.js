@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
   const [jobTitleInput, setJobTitleInput] = useState("");
   const [jobDescInput, setJobDescInput] = useState("");
   const [questionResult, setQuestionResult] = useState("");
@@ -14,11 +15,12 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      setManyQuestions(localStorage.getItem('manyQuestions'))
+      setManyQuestions(localStorage.getItem('manyQuestions')||0)
     }
   }, []);
 
   function setManyQuestions(_manyQuestions) {
+    console.log(_manyQuestions)
     if (typeof window !== "undefined" && window.localStorage) {
       localStorage.setItem("manyQuestions", parseInt(_manyQuestions))
       _setManyQuestions(parseInt(_manyQuestions))
@@ -26,6 +28,7 @@ export default function Home() {
   }
 
   async function onSubmit(event) {
+    setIsLoading(true)
     setManyQuestions(manyQuestions+1)
     setInterviewAnswerInput('')
     setInterviewAnswerEvaluationResult('')
@@ -49,10 +52,13 @@ export default function Home() {
       // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
+    } finally {
+      setIsLoading(false)
     }
   }
 
   async function onSubmitInterviewAnswer(event) {
+    setIsLoading(true)
     setManyQuestions(manyQuestions+1)
     event.preventDefault();
     try {
@@ -79,6 +85,8 @@ export default function Home() {
       // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -93,7 +101,10 @@ export default function Home() {
     setShowVenmo(false)
   }
 
-  const submitTxt = (questionResult) ? "Next question" : "Generate a sample interview question"
+  const answerSubmitTxt = (interviewAnswerInput) ? "Reevaluate your answer" : "Evaluate your answer"
+  const answerSubmitOrLoader = (isLoading) ?
+    <div className={styles.loader}></div> :
+    <input type="submit" value={answerSubmitTxt} />
   let interviewAnswerEl = (questionResult) ?
     <form onSubmit={onSubmitInterviewAnswer}>
       <textarea
@@ -102,7 +113,7 @@ export default function Home() {
         value={interviewAnswerInput}
         onChange={(e) => setInterviewAnswerInput(e.target.value)}
       />
-      <input type="submit" value="Submit your answer for evaluation" />
+      {answerSubmitOrLoader}
     </form>
     : <span/>
 
@@ -112,6 +123,11 @@ export default function Home() {
     <div className={styles.payment} onMouseOver={onMouseOverPayment} onMouseLeave={onMouseOutPayment}>{manyQuestionsStr}</div>
     <img src="/venmo.png" className={styles.venmo} hidden={!showVenmo} />
   </div> : <span/>
+
+  const jobSubmitTxt = (questionResult) ? "Next question" : "Generate a sample interview question"
+  const jobSubmitOrLoader = (isLoading) ?
+    <div className={styles.loader}></div> :
+    <input type="submit" value={jobSubmitTxt}/>
 
   return (
     <div>
@@ -135,7 +151,7 @@ export default function Home() {
             value={jobDescInput}
             onChange={(e) => setJobDescInput(e.target.value)}
           />
-          <input type="submit" value={submitTxt} />
+          {jobSubmitOrLoader}
         </form>
         <div className={styles.result}>{questionResult}</div>
         {interviewAnswerEl}
