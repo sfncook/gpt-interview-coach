@@ -34,7 +34,32 @@ export default async function (req, res) {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
-        {role: 'system', content: 'You are conducting a job interview and asking a candidate interview questions to evaluate how well suited they are for the job'},
+        {role: 'system', content: `
+          You are conducting a job interview and asking a candidate interview 
+          questions to evaluate how well suited they are for the job.  You will be provided 
+          with a job title, an optional job description, the question that was asked, and
+          the job candidate's answer.  Your answer should be in the following JSON format:
+          """
+            {
+                "rating": 5,
+                "strengths": [
+                  "Good stuff",
+                  "Concise",
+                  "Well thought out"
+                ],
+                "weaknesses": [
+                  "Needs more detail",
+                  "Don't repeat yourself",
+                  "Didn't address the question"
+                ]
+            }
+          """
+          
+          Where:
+            rating: Numeric (integer) evaluation of the answer where 1=entirely inappropriate or ineffective answer and 10=phenomenal response and extraordinarily effective
+            strengths: 1-3 brief, concise sentence fragments demonstrating what was effective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
+            weaknesses: 1-3 brief, concise sentence fragments demonstrating what was ineffective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
+        `},
         {role: 'user', content: generatePrompt(jobTitle, jobDesc, question, interviewAnswer)},
       ],
       model: 'gpt-3.5-turbo',
@@ -59,14 +84,12 @@ export default async function (req, res) {
 }
 
 function generatePrompt(jobTitle, jobDesc, question, interviewAnswer) {
-  let prompt = `Evaluate this answer: "${interviewAnswer}" for this question: "${question}" asked during an interview for a job with this title: ${jobTitle}`
-  if(jobDesc) {
-    prompt = prompt + ` and the following description:
-      """
-      ${jobDesc}
-      """
-    `
-  }
+  const prompt = `
+    Job Title: """${jobTitle}"""
+    Job Description (optional): """${jobDesc}"""
+    Interview Question: """${question}"""
+    Job Candidate's Answer to the question: """${interviewAnswer}"""
+  `
   // console.log(prompt)
   return prompt
 }
