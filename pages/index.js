@@ -40,6 +40,7 @@ export default function Home() {
   }
 
   async function onSubmitInterviewAnswer(event) {
+    setManyQuestions(manyQuestions+1)
     event.preventDefault();
     try {
       const response = await fetch("/api/evaluateInterviewAnswer", {

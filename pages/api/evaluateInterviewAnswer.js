@@ -19,8 +19,8 @@ export default async function (req, res) {
 
   const jobTitle = req.body.jobTitle || '';
   const jobDesc = req.body.jobDesc || '';
-  // const question = req.body.question || '';
-  const question = 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?';
+  const question = req.body.question || '';
+  // const question = 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?';
   const interviewAnswer = req.body.interviewAnswer || '';
   if (jobTitle.trim().length === 0) {
     res.status(400).json({
