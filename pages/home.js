@@ -12,7 +12,7 @@ export default function Home() {
   const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState("");
   // const initValue = (typeof window !== "undefined") ? localStorage.getItem('manyQuestions') : 0
   const [manyQuestions, _setManyQuestions] = useState(0);
-  const [questions, setQuestions] = useState(false);
+  const [questionObjs, setQuestionObjs] = useState([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -117,29 +117,7 @@ export default function Home() {
       <Head>
         <title>Interview Question Analyzer</title>
       </Head>
-      <main className={styles.main}>
-        <Paypal manyQuestions={manyQuestions}/>
-        <h3>Interview Coach</h3>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="jobTitle"
-            placeholder="Enter a job title"
-            value={jobTitleInput}
-            onChange={(e) => setJobTitleInput(e.target.value)}
-          />
-          <textarea
-            name="jobDesc"
-            placeholder="Enter a job description"
-            value={jobDescInput}
-            onChange={(e) => setJobDescInput(e.target.value)}
-          />
-          {jobSubmitOrLoader}
-        </form>
-        <div className={styles.result}>{questionResult}</div>
-        {interviewAnswerEl}
-        <div className={styles.result}>{interviewAnswerEvaluationResult}</div>
-      </main>
+      <menuAndMain className={styles.menuAndMain}></menuAndMain>
     </div>
   );
 }

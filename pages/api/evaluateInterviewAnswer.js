@@ -67,8 +67,12 @@ export default async function (req, res) {
       model: 'gpt-3.5-turbo',
       temperature: 1,
     });
-    // console.log(completion.choices[0].message.content)
-    res.status(200).json({ result: completion.choices[0].message.content });
+    const rawStr = completion.choices[0].message.content
+    try {
+      res.status(200).json({ result: JSON.parse(rawStr)});
+    }catch (e) {
+      console.error(rawStr)
+    }
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

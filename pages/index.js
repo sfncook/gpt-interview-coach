@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import styles from "./index.module.css";
+import Response from "./response.js";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function Home() {
   }, []);
 
   function setManyQuestions(_manyQuestions) {
-    console.log(_manyQuestions)
+    // console.log(_manyQuestions)
     if (typeof window !== "undefined" && window.localStorage) {
       localStorage.setItem("manyQuestions", parseInt(_manyQuestions))
       _setManyQuestions(parseInt(_manyQuestions))
@@ -76,6 +77,7 @@ export default function Home() {
       });
 
       const data = await response.json();
+      // console.log(data)
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
@@ -155,7 +157,12 @@ export default function Home() {
         </form>
         <div className={styles.result}>{questionResult}</div>
         {interviewAnswerEl}
-        <div className={styles.result}>{interviewAnswerEvaluationResult}</div>
+        <Response
+          rating={interviewAnswerEvaluationResult.rating}
+          strengths={interviewAnswerEvaluationResult.strengths}
+          weaknesses={interviewAnswerEvaluationResult.weaknesses}
+          example={interviewAnswerEvaluationResult.example}
+        />
       </main>
     </div>
   );
