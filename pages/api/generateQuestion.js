@@ -38,7 +38,8 @@ export default async function (req, res) {
       temperature: 1,
     });
     // console.log(completion.choices[0].message.content)
-    res.status(200).json({ result: completion.choices[0].message.content });
+    // res.status(200).json({ result: completion.choices[0].message.content });
+    res.status(200).json({ result: 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?' });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

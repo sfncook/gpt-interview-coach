@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 
 export default function Home() {
@@ -9,8 +9,21 @@ export default function Home() {
   const [interviewAnswerInput, setInterviewAnswerInput] = useState("");
   const [interviewAnswerEvaluationResult, setInterviewAnswerEvaluationResult] = useState("");
   // const initValue = (typeof window !== "undefined") ? localStorage.getItem('manyQuestions') : 0
-  const [manyQuestions, setManyQuestions] = useState(0);
+  const [manyQuestions, _setManyQuestions] = useState(0);
   const [showVenmo, setShowVenmo] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      setManyQuestions(localStorage.getItem('manyQuestions'))
+    }
+  }, []);
+
+  function setManyQuestions(_manyQuestions) {
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("manyQuestions", parseInt(_manyQuestions))
+      _setManyQuestions(parseInt(_manyQuestions))
+    }
+  }
 
   async function onSubmit(event) {
     setManyQuestions(manyQuestions+1)
