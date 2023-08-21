@@ -88,7 +88,11 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jobTitle: jobTitleInput, jobDesc: jobDescInput }),
+        body: JSON.stringify({
+          questions,
+          jobTitle: jobTitleInput,
+          jobDesc: jobDescInput
+        }),
       });
 
       const data = await response.json();

@@ -19,25 +19,16 @@ export default async function (req, res) {
 
   const jobTitle = req.body.jobTitle || '';
   const jobDesc = req.body.jobDesc || '';
-  if (jobTitle.trim().length === 0) {
-    res.status(400).json({
-      error: {
-        message: "Please enter a valid job title",
-      }
-    });
-    return;
-  }
 
+  const messages = generateMessages(jobTitle, jobDesc, req.body.questions)
+  console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
-      messages: [
-        {role: 'system', content: 'You are conducting a job interview.  The user is a job candidate.  You will ask them one interview question.'},
-        {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
-      ],
+      messages,
       // https://platform.openai.com/docs/models/overview
       model: 'gpt-3.5-turbo',
       // model: 'gpt-4-0613',
-      temperature: 1,
+      temperature: 2,
     });
     // console.log(completion.choices[0].message.content)
     res.status(200).json({ result: completion.choices[0].message.content });
@@ -56,6 +47,18 @@ export default async function (req, res) {
       });
     }
   }
+}
+
+function generateMessages(jobTitle, jobDesc, questions) {
+  const messages = [
+    {role: 'system', content: 'You are conducting a job interview.  The user is a job candidate.  You will ask them one interview question.'},
+    {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
+  ]
+  questions.forEach(questionObj=>{
+    messages.push({role: 'assistant', content: questionObj.question})
+    messages.push({role: 'user', content: 'Give me another one'})
+  })
+  return messages
 }
 
 function generatePrompt(jobTitle, jobDesc) {

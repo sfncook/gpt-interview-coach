@@ -131,3 +131,8 @@
 .questionStr {
   text-align: left;
 }
+.questionTitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
