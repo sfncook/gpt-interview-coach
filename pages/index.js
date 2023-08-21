@@ -51,12 +51,22 @@ export default function Home() {
   }
 
   function addQuestion(question) {
-    // console.log(_manyQuestions)
     if (typeof window !== "undefined" && window.localStorage) {
       const prevQuestions = JSON.parse(localStorage.getItem("questions")) || []
       const newQuestions = [...prevQuestions, question];
-      localStorage.setItem("questions", JSON.stringify(newQuestions))
-      _setQuestions(newQuestions)
+      setQuestions(newQuestions)
+    }
+  }
+  function setQuestions(questions) {
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("questions", JSON.stringify(questions))
+      _setQuestions(questions)
+    }
+  }
+  function updateQuestionWithAnswer(index, answer) {
+    if (typeof window !== "undefined" && window.localStorage) {
+      questions[index].answer = answer
+      setQuestions(questions)
     }
   }
 
@@ -100,6 +110,7 @@ export default function Home() {
     setIsLoading(true)
     setManyQuestions(manyQuestions+1)
     event.preventDefault();
+    updateQuestionWithAnswer(questions.length-1, interviewAnswerInput)
     try {
       const response = await fetch("/api/evaluateInterviewAnswer", {
         method: "POST",
@@ -107,10 +118,8 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          jobTitle: jobTitleInput,
-          jobDesc: jobDescInput,
-          question: questions[questions.length-1].question,
-          interviewAnswer: interviewAnswerInput
+          questions,
+          evalIndex: questions.length-1
         }),
       });
 

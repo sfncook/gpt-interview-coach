@@ -17,11 +17,21 @@ export default async function (req, res) {
     return;
   }
 
-  const jobTitle = req.body.jobTitle || '';
-  const jobDesc = req.body.jobDesc || '';
-  const question = req.body.question || '';
-  // const question = 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?';
-  const interviewAnswer = req.body.interviewAnswer || '';
+  if(!req.body.questions || (req.body.evalIndex!==0 && !req.body.evalIndex)) {
+    res.status(400).json({
+      error: {
+        message: "Invalid request",
+      }
+    })
+    return;
+  }
+
+  const questionObj = req.body.questions[req.body.evalIndex]
+
+  const jobTitle = questionObj.jobTitle || '';
+  const jobDesc = questionObj.jobDesc || '';
+  const question = questionObj.question;
+  const interviewAnswer = questionObj.answer
   if (jobTitle.trim().length === 0) {
     res.status(400).json({
       error: {
