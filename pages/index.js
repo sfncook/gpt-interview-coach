@@ -13,10 +13,13 @@ export default function Home() {
   // const initValue = (typeof window !== "undefined") ? localStorage.getItem('manyQuestions') : 0
   const [manyQuestions, _setManyQuestions] = useState(0);
   const [showVenmo, setShowVenmo] = useState(false);
+  const [questions, _setQuestions] = useState([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       setManyQuestions(localStorage.getItem('manyQuestions')||0)
+      const prevQuestions = JSON.parse(localStorage.getItem("questions")) || []
+      _setQuestions(prevQuestions)
     }
   }, []);
 
@@ -25,6 +28,16 @@ export default function Home() {
     if (typeof window !== "undefined" && window.localStorage) {
       localStorage.setItem("manyQuestions", parseInt(_manyQuestions))
       _setManyQuestions(parseInt(_manyQuestions))
+    }
+  }
+
+  function addQuestion(question) {
+    // console.log(_manyQuestions)
+    if (typeof window !== "undefined" && window.localStorage) {
+      const prevQuestions = JSON.parse(localStorage.getItem("questions")) || []
+      const newQuestions = [...prevQuestions, question];
+      localStorage.setItem("questions", JSON.stringify(newQuestions))
+      _setQuestions(newQuestions)
     }
   }
 
