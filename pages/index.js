@@ -69,6 +69,12 @@ export default function Home() {
       setQuestions(questions)
     }
   }
+  function updateQuestionWithEval(index, evaluation) {
+    if (typeof window !== "undefined" && window.localStorage) {
+      questions[index].evaluation = evaluation
+      setQuestions(questions)
+    }
+  }
 
   async function onSubmit(event) {
     setIsLoading(true)
@@ -130,6 +136,7 @@ export default function Home() {
       }
 
       setInterviewAnswerEvaluationResult(data.result);
+      updateQuestionWithEval(questions.length-1, data.result)
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);

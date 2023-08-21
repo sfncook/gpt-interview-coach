@@ -17,7 +17,7 @@ export default async function (req, res) {
     return;
   }
 
-  if(!req.body.questions || (req.body.evalIndex!==0 && !req.body.evalIndex)) {
+  if(!req.body.questions) {
     res.status(400).json({
       error: {
         message: "Invalid request",
@@ -28,52 +28,24 @@ export default async function (req, res) {
 
   const questionObj = req.body.questions[req.body.evalIndex]
 
-  const jobTitle = questionObj.jobTitle || '';
-  const jobDesc = questionObj.jobDesc || '';
-  const question = questionObj.question;
-  const interviewAnswer = questionObj.answer
-  if (jobTitle.trim().length === 0) {
-    res.status(400).json({
-      error: {
-        message: "Please enter a valid job title",
-      }
-    });
-    return;
-  }
+  // const jobTitle = questionObj.jobTitle || '';
+  // const jobDesc = questionObj.jobDesc || '';
+  // const question = questionObj.question;
+  // const interviewAnswer = questionObj.answer
+  // if (jobTitle.trim().length === 0) {
+  //   res.status(400).json({
+  //     error: {
+  //       message: "Please enter a valid job title",
+  //     }
+  //   });
+  //   return;
+  // }
 
+  const messages = generateMessages(req.body.questions)
+  console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
-      messages: [
-        {role: 'system', content: `
-          You are conducting a job interview and asking a candidate interview 
-          questions to evaluate how well suited they are for the job.  You will be provided 
-          with a job title, an optional job description, the question that was asked, and
-          the job candidate's answer.  Your answer should be in the following JSON format:
-          """
-            {
-                "rating": 5,
-                "strengths": [
-                  "Good stuff",
-                  "Concise",
-                  "Well thought out"
-                ],
-                "weaknesses": [
-                  "Needs more detail",
-                  "Don't repeat yourself",
-                  "Didn't address the question"
-                ],
-                "example": ""
-            }
-          """
-          
-          Where:
-            rating: Numeric (integer) evaluation of the answer where 1=entirely inappropriate or ineffective answer and 10=phenomenal response and extraordinarily effective
-            strengths: 1-3 brief, concise sentence fragments demonstrating what was effective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
-            weaknesses: 1-3 brief, concise sentence fragments demonstrating what was ineffective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
-            example: A blank string
-        `},
-        {role: 'user', content: generatePrompt(jobTitle, jobDesc, question, interviewAnswer)},
-      ],
+      messages,
       // https://platform.openai.com/docs/models/overview
       model: 'gpt-3.5-turbo',
       // model: 'gpt-4-0613',
@@ -101,7 +73,51 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(jobTitle, jobDesc, question, interviewAnswer) {
+function generateMessages(questions) {
+  const messages = [
+    {role: 'system', content: `
+          You are conducting a job interview and asking a candidate interview 
+          questions to evaluate how well suited they are for the job.  You will be provided 
+          with a job title, an optional job description, the question that was asked, and
+          the job candidate's answer.  Your answer should be in the following JSON format:
+          """
+            {
+                "rating": 5,
+                "strengths": [
+                  "Good stuff",
+                  "Concise",
+                  "Well thought out"
+                ],
+                "weaknesses": [
+                  "Needs more detail",
+                  "Don't repeat yourself",
+                  "Didn't address the question"
+                ],
+                "example": ""
+            }
+          """
+          
+          Where:
+            rating: Numeric (integer) evaluation of the answer where 1=entirely inappropriate or ineffective answer and 10=phenomenal response and extraordinarily effective
+            strengths: 1-3 brief, concise sentence fragments demonstrating what was effective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
+            weaknesses: 1-3 brief, concise sentence fragments demonstrating what was ineffective about the candidate's answer spoken directly to the candidate and referring to them as "you" and "your"
+            example: A blank string
+        `},
+  ]
+
+  questions.forEach(questionObj=>{
+    messages.push({role: 'user', content: generatePrompt(questionObj)})
+    if(questionObj.evaluation) messages.push({role: 'assistant', content: JSON.stringify(questionObj.evaluation)})
+  })
+
+  return messages
+}
+
+function generatePrompt(questionObj) {
+  const jobTitle = questionObj.jobTitle || '';
+  const jobDesc = questionObj.jobDesc || '';
+  const question = questionObj.question;
+  const interviewAnswer = questionObj.answer
   const prompt = `
     Job Title: """${jobTitle}"""
     Job Description (optional): """${jobDesc}"""
