@@ -28,7 +28,7 @@ export default async function (req, res) {
       // https://platform.openai.com/docs/models/overview
       model: 'gpt-3.5-turbo',
       // model: 'gpt-4-0613',
-      temperature: 2,
+      temperature: 1.25,
     });
     // console.log(completion.choices[0].message.content)
     res.status(200).json({ result: completion.choices[0].message.content });
@@ -52,16 +52,16 @@ export default async function (req, res) {
 function generateMessages(jobTitle, jobDesc, questions) {
   const messages = [
     {role: 'system', content: 'You are conducting a job interview.  The user is a job candidate.  You will ask them one interview question.'},
-    {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
+    {role: 'user', content: generateInitialPrompt(jobTitle, jobDesc)},
   ]
   questions.forEach(questionObj=>{
     messages.push({role: 'assistant', content: questionObj.question})
-    messages.push({role: 'user', content: 'Give me another one'})
   })
+  messages.push({role: 'user', content: generateFollorUpPrompt()})
   return messages
 }
 
-function generatePrompt(jobTitle, jobDesc) {
+function generateInitialPrompt(jobTitle, jobDesc) {
   let prompt = `Ask a single interview question for a job with the title: "${jobTitle}"`
   if(jobDesc) {
     prompt = prompt + ` and the following description:
@@ -71,5 +71,18 @@ function generatePrompt(jobTitle, jobDesc) {
     `
   }
   // console.log(prompt)
+  return prompt
+}
+
+function generateFollorUpPrompt() {
+  const questionPrompts = [
+    'Ask the candidate another question',
+    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
+    'Ask the candidate a behavioral question that delves into interpersonal interactions with their coworkers',
+    'Ask the candidate a question about leadership or initiative required for this role',
+    'Ask the candidate to describe a project or task they have worked on',
+  ]
+  const prompt = questionPrompts[Math.floor(Math.random()*questionPrompts.length)];
+  console.log(prompt)
   return prompt
 }
