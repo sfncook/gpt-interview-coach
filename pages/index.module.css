@@ -85,6 +85,16 @@
   text-align: center;
   cursor: pointer;
 }
+.main input[type="button"] {
+  padding: 12px 0;
+  color: red;
+  background-color: pink;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 5px;
+}
 .main .result {
   font-weight: bold;
   margin-top: 40px;

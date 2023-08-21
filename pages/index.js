@@ -207,7 +207,6 @@ export default function Home() {
       <main className={styles.main}>
         {paymentEl}
         <h3>Interview Coach</h3>
-        <input type="button" value='RESET/DELETE ALL QUESTIONS' onClick={resetQuestions} />
         <form onSubmit={onSubmit}>
           <input
             type="text"
@@ -222,8 +221,11 @@ export default function Home() {
             value={jobDescInput}
             onChange={(e) => setJobDesc(e.target.value)}
           />
-          {questions.map((q,i)=><Question key={i} question={q}/> )}
+          {questions.map((q,i)=><Question key={i} question={q} isLastQuestion={i===questions.length-1}/> )}
           {jobSubmitOrLoader}
+          {
+            (questions.length && !isLoading) ? <input type="button" value='RESET/DELETE ALL QUESTIONS' onClick={resetQuestions} /> : <span/>
+          }
         </form>
         {interviewAnswerEl}
         <Response

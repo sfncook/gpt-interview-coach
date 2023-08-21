@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-export default function Question({question}) {
+export default function Question({question, isLastQuestion}) {
 
 
   let ratingEl = <span/>
@@ -26,11 +26,13 @@ export default function Question({question}) {
     }
     ratingEl = <div style={{backgroundColor:color}}>{question.evaluation.rating}/10</div>
   }
+
+  const questionColor = (isLastQuestion) ? "black" : "#aaa"
   return (
     <div className={styles.question}>
-      <div className={styles.questionTitle}><b>Question #{question.index+1}</b>  {ratingEl}</div>
+      <div className={styles.questionTitle} style={{color:questionColor}}><b>Question #{question.index+1}</b>  {ratingEl}</div>
       <div>{question.rating}</div>
-      <div className={styles.questionStr}><i>{question.question}</i></div>
+      <div className={styles.questionStr} style={{color:questionColor}}><i>{question.question}</i></div>
     </div>
   );
 }

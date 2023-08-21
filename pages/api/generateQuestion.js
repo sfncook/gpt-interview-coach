@@ -77,9 +77,18 @@ function generateInitialPrompt(jobTitle, jobDesc) {
 function generateFollorUpPrompt() {
   const questionPrompts = [
     'Ask the candidate another question',
+    'Ask the candidate another question',
+    'Ask the candidate another question',
+    'Ask the candidate another question',
+    'Ask the candidate another question',
+    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
+    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
+    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
     'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
     'Ask the candidate a behavioral question that delves into interpersonal interactions with their coworkers',
     'Ask the candidate a question about leadership or initiative required for this role',
+    'Ask the candidate to describe a project or task they have worked on',
+    'Ask the candidate to describe a project or task they have worked on',
     'Ask the candidate to describe a project or task they have worked on',
   ]
   const prompt = questionPrompts[Math.floor(Math.random()*questionPrompts.length)];
