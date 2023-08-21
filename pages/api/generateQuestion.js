@@ -21,7 +21,7 @@ export default async function (req, res) {
   const jobDesc = req.body.jobDesc || '';
 
   const messages = generateMessages(jobTitle, jobDesc, req.body.questions)
-  console.log(messages)
+  // console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
       messages,

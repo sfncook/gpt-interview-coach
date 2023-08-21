@@ -26,23 +26,8 @@ export default async function (req, res) {
     return;
   }
 
-  const questionObj = req.body.questions[req.body.evalIndex]
-
-  // const jobTitle = questionObj.jobTitle || '';
-  // const jobDesc = questionObj.jobDesc || '';
-  // const question = questionObj.question;
-  // const interviewAnswer = questionObj.answer
-  // if (jobTitle.trim().length === 0) {
-  //   res.status(400).json({
-  //     error: {
-  //       message: "Please enter a valid job title",
-  //     }
-  //   });
-  //   return;
-  // }
-
-  const messages = generateMessages(req.body.questions)
-  console.log(messages)
+  const messages = generateMessages(req.body.questions.slice(-5))
+  // console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
       messages,
@@ -56,6 +41,7 @@ export default async function (req, res) {
       res.status(200).json({ result: JSON.parse(rawStr)});
     }catch (e) {
       console.error(rawStr)
+      res.status(500).json(e);
     }
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
@@ -63,7 +49,7 @@ export default async function (req, res) {
       console.error(error.response.status, error.response.data);
       res.status(error.response.status).json(error.response.data);
     } else {
-      console.error(`Error with OpenAI API request: ${error.message}`);
+      console.error(`Error with OpenAI API request: ${error}`);
       res.status(500).json({
         error: {
           message: 'An error occurred during your request.',
