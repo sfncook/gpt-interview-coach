@@ -31,15 +31,17 @@ export default async function (req, res) {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
-        {role: 'system', content: 'You are conducting a job interview and asking a candidate interview questions to evaluate how well suited they are for the job'},
+        {role: 'system', content: 'You are conducting a job interview.  The user is a job candidate.  You will ask them one interview question.'},
         {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
       ],
-      model: 'gpt-3.5-turbo',
+      // https://platform.openai.com/docs/models/overview
+      // model: 'gpt-3.5-turbo',
+      model: 'gpt-4-0613',
       temperature: 1,
     });
     // console.log(completion.choices[0].message.content)
-    // res.status(200).json({ result: completion.choices[0].message.content });
-    res.status(200).json({ result: 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?' });
+    res.status(200).json({ result: completion.choices[0].message.content });
+    // res.status(200).json({ result: 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?' });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -57,7 +59,7 @@ export default async function (req, res) {
 }
 
 function generatePrompt(jobTitle, jobDesc) {
-  let prompt = `Ask an interview question for a job with the title: "${jobTitle}"`
+  let prompt = `Ask a single interview question for a job with the title: "${jobTitle}"`
   if(jobDesc) {
     prompt = prompt + ` and the following description:
       """
