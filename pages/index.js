@@ -19,10 +19,28 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       setManyQuestions(localStorage.getItem('manyQuestions')||0)
+      setJobTitle(localStorage.getItem('jobTitle')||'')
+      setJobDesc(localStorage.getItem('jobDesc')||'')
       const prevQuestions = JSON.parse(localStorage.getItem("questions")) || []
       _setQuestions(prevQuestions)
     }
   }, []);
+
+  function setJobTitle(jobTitle) {
+    // console.log(_manyQuestions)
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("jobTitle", jobTitle)
+      setJobTitleInput(jobTitle)
+    }
+  }
+
+  function setJobDesc(jobDesc) {
+    // console.log(_manyQuestions)
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("jobDesc", jobDesc)
+      setJobDescInput(jobDesc)
+    }
+  }
 
   function setManyQuestions(_manyQuestions) {
     // console.log(_manyQuestions)
@@ -63,7 +81,12 @@ export default function Home() {
       }
 
       // setQuestionResult(data.result);
-      addQuestion({question:data.result})
+      addQuestion({
+        index: questions.length,
+        question:data.result,
+        jobTitle: jobTitleInput,
+        jobDesc: jobDescInput,
+      })
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -160,15 +183,15 @@ export default function Home() {
             name="jobTitle"
             placeholder="Enter a job title"
             value={jobTitleInput}
-            onChange={(e) => setJobTitleInput(e.target.value)}
+            onChange={(e) => setJobTitle(e.target.value)}
           />
           <textarea
             name="jobDesc"
             placeholder="Enter a job description"
             value={jobDescInput}
-            onChange={(e) => setJobDescInput(e.target.value)}
+            onChange={(e) => setJobDesc(e.target.value)}
           />
-          {questions.map((q,i)=><Question key={i} index={i+1} question={q}/> )}
+          {questions.map((q,i)=><Question key={i} question={q}/> )}
           {jobSubmitOrLoader}
         </form>
         {interviewAnswerEl}

@@ -125,8 +125,8 @@
   width: 320px;
   padding: 5px;
   margin: 2px;
-  border-top: 3px lightblue double;
-  border-bottom: 3px lightblue double;
+  /*border-top: 3px lightblue double;*/
+  /*border-bottom: 3px lightblue double;*/
 }
 .questionStr {
   text-align: left;
