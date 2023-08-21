@@ -35,8 +35,8 @@ export default async function (req, res) {
         {role: 'user', content: generatePrompt(jobTitle, jobDesc)},
       ],
       // https://platform.openai.com/docs/models/overview
-      // model: 'gpt-3.5-turbo',
-      model: 'gpt-4-0613',
+      model: 'gpt-3.5-turbo',
+      // model: 'gpt-4-0613',
       temperature: 1,
     });
     // console.log(completion.choices[0].message.content)
