@@ -161,6 +161,16 @@ export default function Home() {
     setShowVenmo(false)
   }
 
+  function resetQuestions(event) {
+    event.preventDefault();
+    if (typeof window !== "undefined" && window.localStorage) {
+      if (window.confirm("Are you sure you want to delete all questions?  This will erase them all including your scores and feedback")) {
+        localStorage.removeItem('questions')
+        window.location.reload()
+      }
+    }
+  }
+
   const answerSubmitTxt = (interviewAnswerInput) ? "Reevaluate your answer" : "Evaluate your answer"
   const answerSubmitOrLoader = (isLoading) ?
     <div className={styles.loader}></div> :
@@ -197,6 +207,7 @@ export default function Home() {
       <main className={styles.main}>
         {paymentEl}
         <h3>Interview Coach</h3>
+        <input type="button" value='RESET/DELETE ALL QUESTIONS' onClick={resetQuestions} />
         <form onSubmit={onSubmit}>
           <input
             type="text"
