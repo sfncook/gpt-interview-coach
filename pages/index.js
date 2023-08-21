@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 import Response from "./response.js";
+import Question from "./question.js";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +62,8 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      setQuestionResult(data.result);
+      // setQuestionResult(data.result);
+      addQuestion({question:data.result})
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -84,7 +86,7 @@ export default function Home() {
         body: JSON.stringify({
           jobTitle: jobTitleInput,
           jobDesc: jobDescInput,
-          question: questionResult,
+          question: questions[questions.length-1].question,
           interviewAnswer: interviewAnswerInput
         }),
       });
@@ -120,7 +122,7 @@ export default function Home() {
   const answerSubmitOrLoader = (isLoading) ?
     <div className={styles.loader}></div> :
     <input type="submit" value={answerSubmitTxt} />
-  let interviewAnswerEl = (questionResult) ?
+  let interviewAnswerEl = (questions.length) ?
     <form onSubmit={onSubmitInterviewAnswer}>
       <textarea
         name="interviewAnswer"
@@ -139,7 +141,7 @@ export default function Home() {
     <img src="/venmo.png" className={styles.venmo} hidden={!showVenmo} />
   </div> : <span/>
 
-  const jobSubmitTxt = (questionResult) ? "Next question" : "Generate a sample interview question"
+  const jobSubmitTxt = (questions.length) ? "Next question" : "Generate a sample interview question"
   const jobSubmitOrLoader = (isLoading) ?
     <div className={styles.loader}></div> :
     <input type="submit" value={jobSubmitTxt}/>
@@ -166,9 +168,9 @@ export default function Home() {
             value={jobDescInput}
             onChange={(e) => setJobDescInput(e.target.value)}
           />
+          {questions.map((q,i)=><Question key={i} index={i+1} question={q}/> )}
           {jobSubmitOrLoader}
         </form>
-        <div className={styles.result}>{questionResult}</div>
         {interviewAnswerEl}
         <Response
           rating={interviewAnswerEvaluationResult.rating}
