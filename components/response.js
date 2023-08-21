@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./index.module.css";
+import styles from "../pages/index.module.css";
 
 export default function Response({ rating, strengths, weaknesses, example }) {
 

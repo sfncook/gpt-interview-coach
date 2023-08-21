@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import styles from "./index.module.css";
-import Response from "./response.js";
-import Question from "./question.js";
+import Response from "../components/response.js";
+import Question from "../components/question.js";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);

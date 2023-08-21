@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import styles from "./index.module.css";
+import styles from "../pages/index.module.css";
 
 export default function Paypal({ manyQuestions }) {
   const [showVenmo, setShowVenmo] = useState(false);

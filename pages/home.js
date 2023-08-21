@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import styles from "./index.module.css";
-import Paypal from "./paypal.js";
+import Paypal from "../components/paypal.js";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);

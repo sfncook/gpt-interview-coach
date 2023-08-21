@@ -1,4 +1,4 @@
-import styles from "./index.module.css";
+import styles from "../pages/index.module.css";
 
 export default function Question({question, isLastQuestion}) {
 
