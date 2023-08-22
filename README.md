@@ -1,9 +1,6 @@
-# OpenAI API Quickstart - Node.js example app
+# GPT Interview Coach
 
-This is an example pet name generator app used in the OpenAI API [quickstart tutorial](https://platform.openai.com/docs/quickstart). It uses the [Next.js](https://nextjs.org/) framework with [React](https://reactjs.org/). Check out the tutorial or follow the instructions below to get set up.
-
-![Text box that says name my pet with an icon of a dog](https://user-images.githubusercontent.com/10623307/213887080-b2bc4645-7fdb-4dbd-ae42-efce00d0dc29.png)
-
+GPT-powered interview coach app.  Enter the job title, optional description, and GPT will produce a stream of sample interview questions for you.  Enter your response to each question and GPT will evaluate it for you.  You will need your own (paid) GPT account in order to provide the API key in the .env file (see below)
 
 ## Setup
 
@@ -14,7 +11,7 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 3. Navigate into the project directory
 
    ```bash
-   $ cd openai-quickstart-node
+   $ cd gpt-interview-coach
    ```
 
 4. Install the requirements
@@ -25,7 +22,7 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 
 5. Make a copy of the example environment variables file
 
-   On Linux systems: 
+   On Linux systems:
    ```bash
    $ cp .env.example .env
    ```
@@ -42,3 +39,5 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
    ```
 
 You should now be able to access the app at [http://localhost:3000](http://localhost:3000)! For the full context behind this example app, check out the [tutorial](https://platform.openai.com/docs/quickstart).
+
+
