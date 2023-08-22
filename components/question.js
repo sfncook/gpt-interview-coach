@@ -2,6 +2,18 @@ import styles from "../pages/index.module.css";
 
 export default function Question({question, isLastQuestion, onClickReload}) {
 
+  function strToColor(str){
+    let hash = 0;
+    str.split('').forEach(char => {
+      hash = char.charCodeAt(0) + ((hash << 5) - hash)
+    })
+    let colour = '#'
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff
+      colour += value.toString(16).padStart(2, '0')
+    }
+    return colour
+  }
 
   let ratingEl = <span/>
   if(question.evaluation && question.evaluation.rating) {
@@ -37,6 +49,7 @@ export default function Question({question, isLastQuestion, onClickReload}) {
       <div className={styles.questionTitle} style={{color:questionColor}}><b>Question #{question.index+1}</b>  {ratingEl} {reloadEl}</div>
       <div>{question.rating}</div>
       <div className={styles.questionStr} style={{color:questionColor}}><i>{question.question}</i></div>
+      <div className={styles.questionCategory} style={{backgroundColor:strToColor(question.questionCategory)}}>{question.questionCategory}</div>
     </div>
   );
 }

@@ -141,6 +141,10 @@
 .questionStr {
   text-align: left;
 }
+.questionCategory {
+  font-size: small;
+  text-align: center;
+}
 .questionTitle {
   display: flex;
   flex-direction: row;

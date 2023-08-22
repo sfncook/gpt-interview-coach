@@ -15,6 +15,7 @@ export default function Home() {
   const [manyQuestions, _setManyQuestions] = useState(0);
   const [showVenmo, setShowVenmo] = useState(false);
   const [questions, _setQuestions] = useState([]);
+  const [questionCategories, setQuestionCategories] = useState([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -107,7 +108,8 @@ export default function Home() {
           body: JSON.stringify({
             questions,
             jobTitle: jobTitleInput,
-            jobDesc: jobDescInput
+            jobDesc: jobDescInput,
+            questionCategories,
           }),
         });
 
@@ -116,13 +118,14 @@ export default function Home() {
           throw data.error || new Error(`Request failed with status ${response.status}`);
         }
 
-        console.log(data.questionCategories)
+        setQuestionCategories(data.questionCategories)
 
         addQuestion({
           index: questions.length,
           question: data.result,
           jobTitle: jobTitleInput,
           jobDesc: jobDescInput,
+          questionCategory: data.questionCategory,
         })
       } catch (error) {
         // Consider implementing your own error handling logic here
