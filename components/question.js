@@ -1,6 +1,6 @@
 import styles from "../pages/index.module.css";
 
-export default function Question({question, isLastQuestion}) {
+export default function Question({question, isLastQuestion, onClickReload}) {
 
 
   let ratingEl = <span/>
@@ -26,11 +26,15 @@ export default function Question({question, isLastQuestion}) {
     }
     ratingEl = <div style={{backgroundColor:color}}>{question.evaluation.rating}/10</div>
   }
+  let reloadEl = <span/>
+  if(isLastQuestion) {
+    reloadEl = <img src="/reload.png" className={styles.questionReload} onClick={onClickReload} />
+  }
 
   const questionColor = (isLastQuestion) ? "black" : "#aaa"
   return (
     <div className={styles.question}>
-      <div className={styles.questionTitle} style={{color:questionColor}}><b>Question #{question.index+1}</b>  {ratingEl}</div>
+      <div className={styles.questionTitle} style={{color:questionColor}}><b>Question #{question.index+1}</b>  {ratingEl} {reloadEl}</div>
       <div>{question.rating}</div>
       <div className={styles.questionStr} style={{color:questionColor}}><i>{question.question}</i></div>
     </div>

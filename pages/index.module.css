@@ -146,3 +146,9 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.main .questionReload {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

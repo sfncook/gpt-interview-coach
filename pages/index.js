@@ -69,50 +69,66 @@ export default function Home() {
       setQuestions(questions)
     }
   }
+  function updateQuestion(index, question) {
+    if (typeof window !== "undefined" && window.localStorage) {
+      questions[index].question = question
+      setQuestions(questions)
+    }
+  }
   function updateQuestionWithEval(index, evaluation) {
     if (typeof window !== "undefined" && window.localStorage) {
       questions[index].evaluation = evaluation
       setQuestions(questions)
     }
   }
+  function deleteLastQuestion() {
+    if (typeof window !== "undefined" && window.localStorage) {
+      questions.pop()
+      setQuestions(questions)
+    }
+  }
 
-  async function onSubmit(event) {
-    setIsLoading(true)
-    setManyQuestions(manyQuestions+1)
-    setInterviewAnswerInput('')
-    setInterviewAnswerEvaluationResult('')
-    event.preventDefault();
-    try {
-      const response = await fetch("/api/generateQuestion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          questions,
-          jobTitle: jobTitleInput,
-          jobDesc: jobDescInput
-        }),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
+  function onSubmit(createNewQuestion) {
+    return async (event) => {
+      setIsLoading(true)
+      setManyQuestions(manyQuestions + 1)
+      setInterviewAnswerInput('')
+      setInterviewAnswerEvaluationResult('')
+      if(!createNewQuestion) {
+        deleteLastQuestion()
       }
+      event.preventDefault();
+      try {
+        const response = await fetch("/api/generateQuestion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            questions,
+            jobTitle: jobTitleInput,
+            jobDesc: jobDescInput
+          }),
+        });
 
-      // setQuestionResult(data.result);
-      addQuestion({
-        index: questions.length,
-        question:data.result,
-        jobTitle: jobTitleInput,
-        jobDesc: jobDescInput,
-      })
-    } catch(error) {
-      // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
-    } finally {
-      setIsLoading(false)
+        const data = await response.json();
+        if (response.status !== 200) {
+          throw data.error || new Error(`Request failed with status ${response.status}`);
+        }
+
+        addQuestion({
+          index: questions.length,
+          question: data.result,
+          jobTitle: jobTitleInput,
+          jobDesc: jobDescInput,
+        })
+      } catch (error) {
+        // Consider implementing your own error handling logic here
+        console.error(error);
+        alert(error.message);
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -207,7 +223,7 @@ export default function Home() {
       <main className={styles.main}>
         {paymentEl}
         <h3>Interview Coach</h3>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit(true)}>
           <input
             type="text"
             name="jobTitle"
@@ -221,10 +237,10 @@ export default function Home() {
             value={jobDescInput}
             onChange={(e) => setJobDesc(e.target.value)}
           />
-          {questions.map((q,i)=><Question key={i} question={q} isLastQuestion={i===questions.length-1}/> )}
+          {questions.map((q,i)=><Question key={i} question={q} isLastQuestion={i===questions.length-1 && !isLoading} onClickReload={onSubmit(false)}/> )}
           {jobSubmitOrLoader}
           {
-            (questions.length && !isLoading) ? <input type="button" value='RESET/DELETE ALL QUESTIONS' onClick={resetQuestions} /> : <span/>
+            (questions.length && !isLoading) ? <input type="button" value='RESET/DELETE ALL QUESTIONS' onClick={resetQuestions}  /> : <span/>
           }
         </form>
         {interviewAnswerEl}
