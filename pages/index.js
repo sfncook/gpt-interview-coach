@@ -116,6 +116,8 @@ export default function Home() {
           throw data.error || new Error(`Request failed with status ${response.status}`);
         }
 
+        console.log(data.questionCategories)
+
         addQuestion({
           index: questions.length,
           question: data.result,

@@ -17,22 +17,62 @@ export default async function (req, res) {
     return;
   }
 
+  const model = 'gpt-3.5-turbo'
+  // const model =  'gpt-4-0613'
+
   const jobTitle = req.body.jobTitle || '';
   const jobDesc = req.body.jobDesc || '';
+
+  let questionCategories = req.body.questionCategories || []
+
+  // get question categories first, if needed
+  if(!questionCategories.length) {
+    try {
+      const completion = await openai.chat.completions.create({
+        messages: [{role: 'user', content:
+            `List 6 categories of interview questions for a job with this title:"""${jobTitle}""" 
+            
+            and this description:"""${jobDesc}""". 
+            
+            Your response should be in the following JSON format such that you return an array of strings where each string is simple the title of the category.  Do not provide any other text before or after the JSON array
+            `
+        }],
+        model,
+        temperature: 0.6,
+      });
+      console.log(completion.choices[0].message.content)
+      questionCategories = JSON.parse(completion.choices[0].message.content)
+    } catch(error) {
+      // Consider adjusting the error handling logic for your use case
+      if (error.response) {
+        console.error(error.response.status, error.response.data);
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        console.error(`Error trying to get questionCategories with OpenAI API request: ${error.message}`);
+        res.status(500).json({
+          error: {
+            message: 'An error occurred trying to get questionCategories during your request.',
+          }
+        });
+      }
+      return
+    }//catch
+  }
+  console.log(questionCategories)
 
   const messages = generateMessages(jobTitle, jobDesc, req.body.questions)
   // console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
       messages,
-      // https://platform.openai.com/docs/models/overview
-      model: 'gpt-3.5-turbo',
-      // model: 'gpt-4-0613',
+      model,
       temperature: 1.25,
     });
     // console.log(completion.choices[0].message.content)
-    res.status(200).json({ result: completion.choices[0].message.content });
-    // res.status(200).json({ result: 'Can you provide an example of a complex technical challenge your team faced in a previous role, and how you led them to a successful solution?' });
+    res.status(200).json({
+      result: completion.choices[0].message.content,
+      questionCategories
+    });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -46,8 +86,8 @@ export default async function (req, res) {
         }
       });
     }
-  }
-}
+  }//catch
+}//default func
 
 function generateMessages(jobTitle, jobDesc, questions) {
   const messages = [
