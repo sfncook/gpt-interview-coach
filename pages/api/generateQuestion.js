@@ -17,8 +17,8 @@ export default async function (req, res) {
     return;
   }
 
-  const model = 'gpt-3.5-turbo'
-  // const model =  'gpt-4-0613'
+  // const model = 'gpt-3.5-turbo'
+  const model =  'gpt-4-0613'
 
   const jobTitle = req.body.jobTitle || '';
   const jobDesc = req.body.jobDesc || '';
@@ -30,11 +30,13 @@ export default async function (req, res) {
     try {
       const completion = await openai.chat.completions.create({
         messages: [{role: 'user', content:
-            `List 6 categories of interview questions for a job with this title:"""${jobTitle}""" 
+            `List 5-10 categories of interview questions for a job with this title:"""${jobTitle}""" 
             
             and this description:"""${jobDesc}""". 
             
             Your response should be in the following JSON format such that you return an array of strings where each string is simple the title of the category.  Do not provide any other text before or after the JSON array
+            
+            If the job is a highly technical job then about half the categories should involve the tools involved in performing the job  
             `
         }],
         model,

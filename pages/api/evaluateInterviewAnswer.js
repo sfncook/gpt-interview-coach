@@ -26,6 +26,9 @@ export default async function (req, res) {
     return;
   }
 
+  // const model = 'gpt-3.5-turbo'
+  const model =  'gpt-4-0613'
+
   const questionObj = req.body.questions[req.body.evalIndex]
   const messages = [
     {role: 'system', content: `
@@ -63,8 +66,7 @@ export default async function (req, res) {
     const completion = await openai.chat.completions.create({
       messages,
       // https://platform.openai.com/docs/models/overview
-      model: 'gpt-3.5-turbo',
-      // model: 'gpt-4-0613',
+      model,
       temperature: 1,
     });
     const rawStr = completion.choices[0].message.content

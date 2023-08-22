@@ -208,7 +208,7 @@ export default function Home() {
     </form>
     : <span/>
 
-  const manyQuestionsStr = `Please consider donating $${manyQuestions*0.01} to my Venmo to help pay for the ChatGPT costs`
+  const manyQuestionsStr = `Please consider donating $${(manyQuestions*0.01).toFixed(2)} to my Venmo to help pay for the ChatGPT costs`
 
   const paymentEl = (manyQuestions>0) ? <div>
     <div className={styles.payment} onMouseOver={onMouseOverPayment} onMouseLeave={onMouseOutPayment}>{manyQuestionsStr}</div>
