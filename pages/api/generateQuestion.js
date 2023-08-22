@@ -60,7 +60,8 @@ export default async function (req, res) {
   }
   console.log(questionCategories)
 
-  const messages = generateMessages(jobTitle, jobDesc, req.body.questions)
+  const questionCategory = questionCategories[Math.floor(Math.random()*questionCategories.length)];
+  const messages = generateMessages(jobTitle, jobDesc, req.body.questions, questionCategory)
   // console.log(messages)
   try {
     const completion = await openai.chat.completions.create({
@@ -71,7 +72,8 @@ export default async function (req, res) {
     // console.log(completion.choices[0].message.content)
     res.status(200).json({
       result: completion.choices[0].message.content,
-      questionCategories
+      questionCategory,
+      questionCategories,
     });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
@@ -89,19 +91,19 @@ export default async function (req, res) {
   }//catch
 }//default func
 
-function generateMessages(jobTitle, jobDesc, questions) {
+function generateMessages(jobTitle, jobDesc, questions, questionCategory) {
   const messages = [
     {role: 'system', content: 'You are conducting a job interview.  The user is a job candidate.  You will ask them one interview question.'},
-    {role: 'user', content: generateInitialPrompt(jobTitle, jobDesc)},
+    {role: 'user', content: generateInitialPrompt(jobTitle, jobDesc, questionCategory)},
   ]
   questions.forEach(questionObj=>{
     messages.push({role: 'assistant', content: questionObj.question})
   })
-  messages.push({role: 'user', content: generateFollorUpPrompt()})
+  messages.push({role: 'user', content: generateFollorUpPrompt(questionCategory)})
   return messages
 }
 
-function generateInitialPrompt(jobTitle, jobDesc) {
+function generateInitialPrompt(jobTitle, jobDesc, questionCategory) {
   let prompt = `Ask a single interview question for a job with the title: "${jobTitle}"`
   if(jobDesc) {
     prompt = prompt + ` and the following description:
@@ -110,28 +112,13 @@ function generateInitialPrompt(jobTitle, jobDesc) {
       """
     `
   }
-  // console.log(prompt)
+  prompt = prompt + ` and the question should explore this inquest category: """${questionCategory}"""`
+  console.log(prompt)
   return prompt
 }
 
-function generateFollorUpPrompt() {
-  const questionPrompts = [
-    'Ask the candidate another question',
-    'Ask the candidate another question',
-    'Ask the candidate another question',
-    'Ask the candidate another question',
-    'Ask the candidate another question',
-    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
-    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
-    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
-    'Ask the candidate a technical question that deep-dives into one of the tools or languages the job requires',
-    'Ask the candidate a behavioral question that delves into interpersonal interactions with their coworkers',
-    'Ask the candidate a question about leadership or initiative required for this role',
-    'Ask the candidate to describe a project or task they have worked on',
-    'Ask the candidate to describe a project or task they have worked on',
-    'Ask the candidate to describe a project or task they have worked on',
-  ]
-  const prompt = questionPrompts[Math.floor(Math.random()*questionPrompts.length)];
+function generateFollorUpPrompt(questionCategory) {
+  const prompt = `Ask the candidate another question and the question should explore this inquest category: """${questionCategory}"""`
   console.log(prompt)
   return prompt
 }
